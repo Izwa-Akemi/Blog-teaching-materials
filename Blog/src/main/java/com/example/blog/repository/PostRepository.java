@@ -36,4 +36,20 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         ORDER BY ym
     """)
     List<Object[]> countPostsGroupByMonth();
+    List<Post> findByIsPublishedTrueAndTitleContainingIgnoreCase(String keyword);
+    @Query("""
+    	    SELECT p FROM Post p
+    	    WHERE p.isPublished = true
+    	      AND (:categoryId IS NULL OR p.category.id = :categoryId)
+    	      AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+    	""")
+    	List<Post> searchPublished(Long categoryId, String keyword);
+
+    @Query("""
+    	    SELECT p FROM Post p
+    	    WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
+    	      AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+    	""")
+    	List<Post> adminSearch(Long categoryId, String keyword);
+
 }

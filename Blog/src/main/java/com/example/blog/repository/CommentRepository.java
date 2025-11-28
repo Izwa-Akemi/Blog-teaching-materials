@@ -34,6 +34,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c ORDER BY c.createdAt DESC")
     List<Comment> findAllForAdmin();
 
+    Page<Comment> findByPostIdAndDeletedFalseAndApprovedTrue(Long postId, Pageable pageable);
+    long countByPostIdAndDeletedFalseAndApprovedTrue(Long postId);
 
 
 }

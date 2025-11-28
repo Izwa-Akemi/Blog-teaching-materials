@@ -60,7 +60,7 @@ public class PostService {
 
         Post post = Post.builder()
                 .title(form.getTitle())
-                .content(form.getContent())
+                .content(form.getContent().replace("\n", "<br>"))
                 .author(author)
                 .category(category)
                 .isPublished(form.isPublished())
@@ -88,7 +88,7 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("カテゴリーが見つかりません"));
 
         post.setTitle(form.getTitle());
-        post.setContent(form.getContent());
+        post.setContent(form.getContent().replace("\n", "<br>"));
         post.setCategory(category);
         post.setPublished(form.isPublished());
         post.setUpdatedAt(LocalDateTime.now());
@@ -156,10 +156,12 @@ public class PostService {
 
     /* Post → PostDto 変換 */
     private PostDto toDto(Post post) {
+    	String plain = post.getContent().replaceAll("<[^>]+>", ""); // ← タグ除去
         return PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .summary(plain.length() > 120 ? plain.substring(0, 120) + "..." : plain)  // ← 追加
                 .authorName(post.getAuthor().getDisplayName())
                 .authorId(post.getAuthor().getId())
                 .categoryName(post.getCategory().getName())
@@ -206,4 +208,37 @@ public class PostService {
                 })
                 .toList();
     }
+    /* 公開済み記事のみ取得 */
+    public List<PostDto> findAllPublished() {
+        return postRepository.findByIsPublished(true)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    /* 公開済み ＆ カテゴリ指定 */
+    public List<PostDto> findPublishedByCategory(Long categoryId) {
+        return postRepository.findAll().stream()
+                .filter(p -> p.isPublished())                         // ★ 公開済みだけ
+                .filter(p -> p.getCategory().getId().equals(categoryId))
+                .map(this::toDto)
+                .toList();
+    }
+    /* タイトル・カテゴリ検索（公開済みのみ） */
+    public List<PostDto> searchPublished(Long categoryId, String keyword) {
+        return postRepository.searchPublished(categoryId, keyword)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+    /* 管理者用：カテゴリー & タイトル検索（公開 / 下書き両方） */
+    public List<PostDto> searchForAdmin(Long categoryId, String keyword) {
+        return postRepository.adminSearch(categoryId, keyword)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+
+    
 }

@@ -85,18 +85,31 @@ public class CommentService {
                 .toList();
     }
 
+//    public List<CommentDto> findByPostId(Long postId, int page, int size) {
+//        return commentRepository.findByPostIdAndDeletedFalse(postId,
+//                PageRequest.of(page, size))
+//                .stream()
+//                .map(this::toDto)
+//                .toList();
+//    }
     public List<CommentDto> findByPostId(Long postId, int page, int size) {
-        return commentRepository.findByPostIdAndDeletedFalse(postId,
-                PageRequest.of(page, size))
+        return commentRepository
+                .findByPostIdAndDeletedFalseAndApprovedTrue(postId, PageRequest.of(page, size))
                 .stream()
                 .map(this::toDto)
                 .toList();
     }
 
+
+//    public long countByPostId(Long postId) {
+//        return commentRepository.countByPostIdAndDeletedFalse(postId);
+//    }
+
     public long countByPostId(Long postId) {
-        return commentRepository.countByPostIdAndDeletedFalse(postId);
+        return commentRepository.countByPostIdAndDeletedFalseAndApprovedTrue(postId);
     }
-    
+
+
     public void deleteByUser(Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("コメントが見つかりません"));

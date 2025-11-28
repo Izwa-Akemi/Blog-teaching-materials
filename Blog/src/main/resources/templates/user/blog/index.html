@@ -17,6 +17,31 @@
 
     <!-- 記事一覧（メイン） -->
     <section class="md:col-span-2">
+		<!-- ▼ 検索フォーム ▼ -->
+		<form method="get" action="/blog" class="mb-6 flex gap-3">
+
+		    <select name="category"
+		            class="border rounded px-3 py-2">
+		        <option value="">全カテゴリ</option>
+
+		        <option th:each="cat : ${categories}"
+		                th:value="${cat.id}"
+		                th:selected="${cat.id == categoryId}"
+		                th:text="${cat.name}">
+		        </option>
+		    </select>
+
+		    <input type="text"
+		           name="keyword"
+		           placeholder="記事タイトルで検索"
+		           th:value="${keyword}"
+		           class="border rounded px-3 py-2 w-60"/>
+
+		    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+		        検索
+		    </button>
+		</form>
+
 
         <h2 class="text-xl font-semibold mb-6">
             <span th:if="${categoryId != null}">カテゴリ絞り込み</span>
@@ -46,7 +71,7 @@
                     </p>
 
                     <p class="text-sm text-gray-600 line-clamp-3"
-                       th:text="${post.content}">
+                       th:text="${post.summary}">
                     </p>
                 </div>
             </a>

@@ -17,7 +17,7 @@
     <form method="post" action="/login" th:action="@{/login}">
         
         <!-- hidden redirect (コメント投稿から来た場合) -->
-        <input type="hidden" name="redirectTo" th:value="${redirectTo}" />
+        <input type="hidden" name="redirectTo" th:value="${param.redirectTo}" />
 
         <!-- メール -->
         <label class="block text-sm font-medium mb-1">メールアドレス</label>

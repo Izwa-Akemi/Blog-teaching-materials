@@ -12,6 +12,39 @@
 <!-- 上部ナビバー -->
 <!-- 共通ヘッダー -->
 	<div th:replace="admin/layout/header :: adminHeader(${currentUser})"></div>
+	<!-- ▼ 検索フォーム ▼ -->
+	<form action="/admin/posts" method="get"
+	      class="mb-6 flex flex-wrap gap-4 items-end bg-white p-4 rounded-lg shadow">
+
+	    <!-- カテゴリ選択 -->
+	    <div>
+	        <label class="text-sm text-gray-600">カテゴリ</label>
+	        <select name="category"
+	                class="border px-3 py-2 rounded w-48">
+	            <option value="">すべて</option>
+
+	            <option th:each="cat : ${categories}"
+	                    th:value="${cat.id}"
+	                    th:selected="${cat.id == categoryId}"
+	                    th:text="${cat.name}">
+	            </option>
+	        </select>
+	    </div>
+
+	    <!-- キーワード -->
+	    <div>
+	        <label class="text-sm text-gray-600">記事タイトル</label>
+	        <input type="text" name="keyword"
+	               th:value="${keyword}"
+	               placeholder="タイトルで検索"
+	               class="border px-3 py-2 rounded w-64">
+	    </div>
+
+	    <!-- 検索ボタン -->
+	    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+	        検索
+	    </button>
+	</form>
 
 <main class="max-w-6xl mx-auto px-4 py-8">
 

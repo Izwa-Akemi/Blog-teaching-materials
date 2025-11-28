@@ -96,9 +96,18 @@ public class SecurityConfig {
             .formLogin(login -> login
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/blog", true)
+                //.defaultSuccessUrl("/blog", true)
                 .usernameParameter("email")
                 .passwordParameter("password")
+                // ★★ ログイン後のリダイレクト制御 ★★
+                .successHandler((req, res, auth) -> {
+                    String redirect = req.getParameter("redirectTo");
+                    if (redirect != null && !redirect.isBlank()) {
+                        res.sendRedirect(redirect);
+                    } else {
+                        res.sendRedirect("/blog");  // デフォルト
+                    }
+                })
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
