@@ -1,0 +1,54 @@
+<!-- src/main/resources/templates/user/login.html -->
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ログイン | MyBlog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md border border-gray-100">
+
+    <h2 class="text-2xl font-bold text-center mb-6">ログイン</h2>
+
+    <form method="post" action="/login" th:action="@{/login}">
+        
+        <!-- hidden redirect (コメント投稿から来た場合) -->
+        <input type="hidden" name="redirectTo" th:value="${redirectTo}" />
+
+        <!-- メール -->
+        <label class="block text-sm font-medium mb-1">メールアドレス</label>
+        <input name="email" type="email"
+               class="w-full px-4 py-2 mb-4 border rounded-lg bg-gray-50 focus:bg-white focus:ring"
+               placeholder="you@example.com" required>
+
+        <!-- パスワード -->
+        <label class="block text-sm font-medium mb-1">パスワード</label>
+        <input name="password" type="password"
+               class="w-full px-4 py-2 mb-6 border rounded-lg bg-gray-50 focus:bg-white focus:ring"
+               placeholder="••••••••" required>
+
+        <!-- ログインボタン -->
+        <button type="submit"
+                class="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+            ログイン
+        </button>
+
+        <!-- エラー -->
+        <p th:if="${param.error}" class="text-red-500 text-sm mt-4 text-center">
+            メールまたはパスワードが正しくありません。
+        </p>
+    </form>
+
+    <p class="text-center text-sm text-gray-500 mt-6">
+        アカウントをお持ちでない方は  
+        <a href="/signup" class="text-blue-600 hover:underline">新規登録</a>
+    </p>
+
+</div>
+
+</body>
+</html>

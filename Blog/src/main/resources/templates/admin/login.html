@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理者ログイン</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400">
+
+<div class="bg-white/80 backdrop-blur-xl p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
+
+    <!-- アイコン -->
+    <div class="flex justify-center mb-4">
+        <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M17 20v-2a4 4 0 00-4-4H11a4 4 0 00-4 4v2" />
+            </svg>
+        </div>
+    </div>
+
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-2 tracking-wide">
+        管理者ログイン
+    </h1>
+
+    <p class="text-center text-gray-600 mb-8 text-sm">
+        管理者専用ページへのアクセス
+    </p>
+
+    <form th:action="@{/admin/login}" method="post" class="space-y-6">
+
+		<!-- メールアドレス -->
+		<div>
+		    <label class="block text-gray-700 font-semibold mb-1">メールアドレス</label>
+		    <input name="email" type="email"
+		           class="w-full border border-gray-300 rounded-lg px-4 py-2
+		                  focus:ring-2 focus:ring-blue-500 focus:outline-none"
+		           placeholder="admin@example.com" required>
+		</div>
+
+        <!-- パスワード -->
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">パスワード</label>
+            <input name="password" type="password"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white/90
+                          focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+                   placeholder="パスワードを入力" required>
+        </div>
+
+        <!-- ボタン -->
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold
+                       hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
+            ログイン
+        </button>
+
+    </form>
+
+    <!-- 下部メッセージ -->
+    <p class="text-center text-gray-500 text-sm mt-6">
+        &copy; 2025 管理者コンソール
+    </p>
+
+</div>
+
+</body>
+</html>

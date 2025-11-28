@@ -1,0 +1,63 @@
+<!-- templates/admin/layout/header.html -->
+<div th:fragment="adminHeader(currentUser)">
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+
+            <!-- ===== 上段：ロゴ + ユーザー情報 ===== -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+
+                <!-- ロゴ -->
+                <a href="/admin/dashboard" class="flex items-center gap-3 hover:opacity-80">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                        A
+                    </div>
+
+                    <div>
+                        <p class="text-xs text-gray-500">Admin Console</p>
+                        <h1 class="text-lg font-bold text-gray-800">ブログ管理システム</h1>
+                    </div>
+                </a>
+
+                <!-- ユーザー情報 -->
+                <div class="flex items-center gap-4">
+
+                    <div class="text-right">
+                        <p class="text-xs text-gray-500">ログイン中の管理者</p>
+                        <p class="text-sm font-semibold text-gray-800"
+                           th:text="${currentUser.displayName}"></p>
+                    </div>
+
+                    <div class="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center text-gray-700">
+                        <span th:text="${#strings.substring(currentUser.displayName,0,1)}">A</span>
+                    </div>
+
+                    <!-- ログアウト -->
+                    <form th:action="@{/admin/logout}" method="post">
+                        <button type="submit"
+                                class="px-3 py-1.5 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition">
+                            ログアウト
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== 下段：メニュー（折り返し可能） ===== -->
+            <nav class="flex flex-wrap items-center gap-x-6 gap-y-3 mt-4 text-sm">
+
+                <a href="/admin/posts/create" class="text-gray-700 hover:text-blue-600">ブログ登録</a>
+                <a href="/admin/posts" class="text-gray-700 hover:text-blue-600">ブログ一覧</a>
+                <a href="/admin/comments" class="text-gray-700 hover:text-blue-600">コメント一覧</a>
+
+                <a href="/admin/categories" class="text-gray-700 hover:text-blue-600">カテゴリ一覧</a>
+                <a href="/admin/categories/create" class="text-gray-700 hover:text-blue-600">カテゴリ追加</a>
+
+                <a href="/admin/users/create" class="text-gray-700 hover:text-blue-600">管理者追加</a>
+                <a href="/admin/users/list" class="text-gray-700 hover:text-blue-600">管理者一覧</a>
+
+                <a href="/admin/profile/edit" class="text-gray-700 hover:text-blue-600">プロフィール編集</a>
+
+            </nav>
+
+        </div>
+    </header>
+</div>

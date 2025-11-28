@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理者追加</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ▼ ヘッダー（共通ナビバー） -->
+<!-- 共通ヘッダー -->
+	<div th:replace="admin/layout/header :: adminHeader(${currentUser})"></div>
+
+<!-- ▼ メイン -->
+<div class="w-full max-w-lg mx-auto mt-12 bg-white shadow-xl rounded-2xl p-8">
+
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+        新しい管理者を追加
+    </h1>
+
+    <form th:action="@{/admin/users/create}" th:object="${userForm}"
+          method="post" class="space-y-6">
+
+        <!-- ユーザー名 -->
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">ユーザー名</label>
+            <input th:field="*{username}" type="text"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2
+                          focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                   placeholder="例: admin02" />
+
+            <p th:if="${#fields.hasErrors('username')}"
+               th:errors="*{username}"
+               class="text-red-500 text-sm mt-1"></p>
+        </div>
+
+        <!-- 表示名 -->
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">表示名</label>
+            <input th:field="*{displayName}" type="text"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2
+                          focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                   placeholder="例: 管理者 二郎" />
+
+            <p th:if="${#fields.hasErrors('displayName')}"
+               th:errors="*{displayName}"
+               class="text-red-500 text-sm mt-1"></p>
+        </div>
+
+        <!-- メールアドレス -->
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">メールアドレス</label>
+            <input th:field="*{email}" type="email"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2
+                          focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                   placeholder="例: admin@example.com" />
+
+            <p th:if="${#fields.hasErrors('email')}"
+               th:errors="*{email}"
+               class="text-red-500 text-sm mt-1"></p>
+        </div>
+
+        <!-- パスワード -->
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">パスワード</label>
+            <input th:field="*{password}" type="password"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2
+                          focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                   placeholder="8文字以上" />
+
+            <p th:if="${#fields.hasErrors('password')}"
+               th:errors="*{password}"
+               class="text-red-500 text-sm mt-1"></p>
+        </div>
+
+        <!-- 登録ボタン -->
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold
+                       hover:bg-blue-700 transition">
+            管理者を登録する
+        </button>
+
+    </form>
+</div>
+
+</body>
+</html>

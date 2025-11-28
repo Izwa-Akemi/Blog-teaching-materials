@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+
+<body>
+<div th:fragment="siteHeader">
+    <header class="bg-white shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <!-- 左側：ロゴ -->
+            <a href="/blog" class="text-2xl font-bold text-blue-600">MyBlog</a>
+
+            <!-- 右側：メニュー -->
+            <div class="flex items-center space-x-6">
+
+                <a href="/blog" class="text-gray-600 hover:text-blue-500">ホーム</a>
+                <a href="#" class="text-gray-600 hover:text-blue-500">プロフィール</a>
+                <a href="#" class="text-gray-600 hover:text-blue-500">お問い合わせ</a>
+
+                <!-- ▼ ログインしている場合 ▼ -->
+                <div th:if="${isLoggedIn}" class="flex items-center space-x-4">
+                    <span class="font-semibold text-gray-800"
+                          th:text="${currentUserName} + ' さん'"></span>
+
+                    <form th:action="@{/logout}" method="post">
+                        <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                            ログアウト
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ▼ 未ログインの場合 ▼ -->
+                <div th:if="${!isLoggedIn}">
+                    <a href="/login"
+                       class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        ログイン
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </header>
+</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー登録</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="max-w-md mx-auto mt-16 bg-white p-8 rounded-xl shadow">
+
+    <h1 class="text-2xl font-bold text-center mb-6">ユーザー登録</h1>
+
+    <p th:if="${error}" class="text-red-600 text-center mb-4" th:text="${error}"></p>
+
+    <form th:action="@{/signup}" th:object="${userForm}" method="post">
+
+        <label class="block mb-3">
+            <span class="text-gray-700">ユーザー名</span>
+            <input type="text" th:field="*{username}"
+                   class="w-full mt-1 p-2 border rounded" required>
+        </label>
+
+        <label class="block mb-3">
+            <span class="text-gray-700">表示名</span>
+            <input type="text" th:field="*{displayName}"
+                   class="w-full mt-1 p-2 border rounded" required>
+        </label>
+
+        <label class="block mb-3">
+            <span class="text-gray-700">メールアドレス</span>
+            <input type="email" th:field="*{email}"
+                   class="w-full mt-1 p-2 border rounded" required>
+        </label>
+
+        <label class="block mb-6">
+            <span class="text-gray-700">パスワード</span>
+            <input type="password" th:field="*{password}"
+                   class="w-full mt-1 p-2 border rounded" required>
+        </label>
+
+        <button type="submit"
+                class="w-full py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700">
+            登録する
+        </button>
+
+    </form>
+
+    <p class="text-center text-sm mt-6">
+        すでにアカウントがありますか？
+        <a href="/login" class="text-blue-600 hover:underline">ログイン</a>
+    </p>
+
+</div>
+
+</body>
+</html>

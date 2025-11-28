@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>記事編集</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+	<!-- 上部ナビバー -->
+	<!-- 共通ヘッダー -->
+		<div th:replace="admin/layout/header :: adminHeader(${currentUser})"></div>
+
+<main class="max-w-4xl mx-auto px-4 py-8">
+
+	<form th:action="@{'/admin/posts/edit/' + ${postForm.id}}"
+	      th:object="${postForm}"
+	      method="post"
+	      enctype="multipart/form-data"
+	      class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
+
+        <!-- タイトル -->
+        <div>
+            <label class="block text-sm font-semibold mb-1">タイトル</label>
+            <input type="text" th:field="*{title}"
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200"/>
+        </div>
+
+        <!-- カテゴリ -->
+        <div>
+            <label class="block text-sm font-semibold mb-1">カテゴリー</label>
+            <select th:field="*{categoryId}"
+                    class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}">
+                </option>
+            </select>
+        </div>
+
+        <!-- 公開設定 -->
+        <div class="flex items-center space-x-2">
+            <input type="checkbox" th:field="*{published}" class="w-4 h-4"/>
+            <label class="text-sm">公開する</label>
+        </div>
+
+        <!-- 本文 -->
+        <div>
+            <label class="block text-sm font-semibold mb-1">本文</label>
+            <textarea th:field="*{content}" rows="8"
+                      class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200"></textarea>
+        </div>
+
+        <!-- 現在の画像 -->
+        <div th:if="${postImage != null}">
+            <p class="text-sm text-gray-600 mb-1">現在の画像</p>
+            <img th:src="@{${postImage}}" class="w-48 rounded-md shadow mb-3"/>
+        </div>
+
+        <!-- 新しい画像のアップロード -->
+        <div>
+            <label class="block text-sm font-semibold mb-1">新しい画像（任意）</label>
+            <input type="file" name="imageFile"
+                   class="w-full border rounded-lg p-2 bg-white"/>
+        </div>
+
+        <!-- 保存ボタン -->
+        <div class="text-right">
+            <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                更新する
+            </button>
+        </div>
+
+    </form>
+
+</main>
+
+</body>
+</html>

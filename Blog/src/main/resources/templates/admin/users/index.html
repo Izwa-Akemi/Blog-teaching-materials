@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者一覧</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ▼ 共通ヘッダー -->
+<!-- 共通ヘッダー -->
+	<div th:replace="admin/layout/header :: adminHeader(${currentUser})"></div>
+
+<!-- ▼ メインコンテンツ -->
+<div class="max-w-6xl mx-auto px-4">
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">管理者一覧</h2>
+
+    <!-- テーブル -->
+    <div class="bg-white shadow-md rounded-xl overflow-hidden border border-gray-200">
+
+        <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold text-gray-700">表示名</th>
+                    <th class="px-6 py-3 font-semibold text-gray-700">ユーザー名</th>
+                    <th class="px-6 py-3 font-semibold text-gray-700">メールアドレス</th>
+                    <th class="px-6 py-3 font-semibold text-gray-700">権限</th>
+                    <th class="px-6 py-3 font-semibold text-gray-700">登録日</th>
+                    <th class="px-6 py-3 text-right font-semibold text-gray-700">操作</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="admin : ${admins}" class="border-b hover:bg-gray-50">
+
+                    <td class="px-6 py-3" th:text="${admin.displayName}"></td>
+                    <td class="px-6 py-3" th:text="${admin.username}"></td>
+                    <td class="px-6 py-3" th:text="${admin.email}"></td>
+                    <td class="px-6 py-3">
+                        <span class="px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-700"
+                              th:text="${admin.role}">ADMIN</span>
+                    </td>
+
+                    <td class="px-6 py-3"
+                        th:text="${#temporals.format(admin.createdAt, 'yyyy/MM/dd')}"></td>
+
+                    <td class="px-6 py-3 text-right space-x-3">
+
+                        <!-- 編集ボタン -->
+                        <a th:href="@{'/admin/users/edit/' + ${admin.id}}"
+                           class="text-blue-600 hover:underline">
+                            編集
+                        </a>
+
+                        <!-- 削除ボタン -->
+						<!-- ★ 削除ボタン：GET → POST 化（安全対策） -->
+						<form th:action="@{'/admin/users/delete/' + ${admin.id}}" method="post"
+						      onsubmit="return confirm('本当に削除しますか？');"
+						      style="display:inline;">
+						    <button type="submit" class="text-red-600 hover:underline">
+						        削除
+						    </button>
+						</form>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

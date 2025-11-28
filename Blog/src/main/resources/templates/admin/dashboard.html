@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>管理者ダッシュボード</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- 共通ヘッダー -->
+<div th:replace="admin/layout/header :: adminHeader(${currentUser})"></div>
+
+<!-- コンテンツ -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- 挨拶 -->
+    <h2 class="text-3xl font-bold mb-3">
+        ようこそ、<span class="text-blue-600" th:text="${currentUser.displayName}"></span> さん
+    </h2>
+    <p class="text-gray-600 mb-8">ブログ管理システムのダッシュボードです。</p>
+
+    <!-- 概要カード（統計） -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+
+        <!-- 総記事数 -->
+        <div class="bg-white shadow rounded-xl p-5 border border-gray-100">
+            <p class="text-xs text-gray-500">総記事数</p>
+            <p class="text-3xl font-bold" th:text="${postCount}">0</p>
+        </div>
+
+        <!-- 公開記事 -->
+        <div class="bg-white shadow rounded-xl p-5 border border-gray-100">
+            <p class="text-xs text-gray-500">公開記事</p>
+            <p class="text-3xl font-bold text-green-600" th:text="${publishedCount}">0</p>
+        </div>
+
+        <!-- 下書き -->
+        <div class="bg-white shadow rounded-xl p-5 border border-gray-100">
+            <p class="text-xs text-gray-500">下書き</p>
+            <p class="text-3xl font-bold text-gray-500" th:text="${draftCount}">0</p>
+        </div>
+
+        <!-- コメント数 -->
+        <div class="bg-white shadow rounded-xl p-5 border border-gray-100">
+            <p class="text-xs text-gray-500">コメント数</p>
+            <p class="text-3xl font-bold text-blue-600" th:text="${commentCount}">0</p>
+        </div>
+
+    </section>
+
+    <!-- グラフ：投稿推移 + カテゴリ割合 -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+
+		<!-- 月別投稿推移 -->
+		<div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+		    <h3 class="text-lg font-semibold mb-3">月別投稿数</h3>
+		    <div class="h-64"> <!-- ★ 高さをつける -->
+		        <canvas id="postLineChart"></canvas>
+		    </div>
+		</div>
+
+		<!-- カテゴリ割合 -->
+		<div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+		    <h3 class="text-lg font-semibold mb-3">カテゴリ別記事割合</h3>
+		    <div class="h-64"> <!-- ★ 高さをつける -->
+		        <canvas id="categoryPieChart"></canvas>
+		    </div>
+		</div>    </section>
+
+    <!-- 最近の投稿・ユーザー・コメント -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- 最近の投稿 -->
+        <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+            <h3 class="text-lg font-semibold mb-4">最近の投稿</h3>
+
+            <div th:each="post : ${recentPosts}" class="border-b py-3">
+                <p class="font-semibold" th:text="${post.title}"></p>
+                <p class="text-sm text-gray-500"
+                   th:text="${#temporals.format(post.createdAt,'yyyy/MM/dd HH:mm')}"></p>
+            </div>
+
+            <p th:if="${#lists.isEmpty(recentPosts)}" class="text-gray-500 text-sm">投稿がありません</p>
+        </div>
+
+        <!-- 最近のユーザー -->
+        <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+            <h3 class="text-lg font-semibold mb-4">最近のユーザー</h3>
+
+            <div th:each="user : ${recentUsers}" class="border-b py-3">
+                <p class="font-semibold" th:text="${user.displayName}"></p>
+                <p class="text-sm text-gray-500"
+                   th:text="${#temporals.format(user.createdAt,'yyyy/MM/dd HH:mm')}"></p>
+            </div>
+
+            <p th:if="${#lists.isEmpty(recentUsers)}" class="text-gray-500 text-sm">ユーザーがいません</p>
+        </div>
+
+        <!-- 最近のコメント -->
+        <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+            <h3 class="text-lg font-semibold mb-4">最近のコメント</h3>
+
+            <div th:each="c : ${recentComments}" class="border-b py-3">
+                <p class="font-semibold text-gray-800" th:text="${c.authorName}"></p>
+                <p class="text-sm text-gray-600" th:text="${c.content}"></p>
+                <p class="text-xs text-gray-500"
+                   th:text="${#temporals.format(c.createdAt,'yyyy/MM/dd HH:mm')}"></p>
+            </div>
+
+            <p th:if="${#lists.isEmpty(recentComments)}" class="text-gray-500 text-sm">コメントがありません</p>
+        </div>
+
+    </section>
+
+</main>
+
+<!-- Chart.js Scripts -->
+<script th:inline="javascript">
+
+    /* ---- 折れ線グラフ（投稿推移） ---- */
+    const postStats = /*[[${postStatsJson}]]*/ "[]";
+    const postData = JSON.parse(postStats);
+
+    // month → labels, count → data の配列化
+    const labels = postData.map(item => item.month);
+    const data = postData.map(item => item.count);
+
+    new Chart(
+        document.getElementById('postLineChart'),
+        {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '投稿数',
+                    data: data,
+                    borderWidth: 2,
+                    borderColor: "#3b82f6",
+                    backgroundColor: "rgba(59, 130, 246, 0.3)"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        }
+    );
+
+
+    /* ---- 円グラフ（カテゴリ割合） ---- */
+    const categoryLabels = /*[[${categoryLabels}]]*/ [];
+    const categoryCounts = /*[[${categoryCounts}]]*/ [];
+
+    new Chart(
+        document.getElementById('categoryPieChart'),
+        {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryCounts,
+                    backgroundColor: [
+                        "#3b82f6",
+                        "#10b981",
+                        "#f59e0b",
+                        "#ef4444",
+                        "#8b5cf6"
+                    ]
+                }]
+            }
+        }
+    );
+
+</script>
+
+</body>
+</html>
